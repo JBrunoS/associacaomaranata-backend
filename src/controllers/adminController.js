@@ -4,8 +4,6 @@ module.exports = {
     async index(request, response) {
         const { email, senha } = request.body;
 
-        console.log(email, senha);
-
         const admin = await connection('admin')
         .where({
             'email': email,

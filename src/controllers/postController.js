@@ -39,15 +39,47 @@ module.exports = {
         return response.json(publicacoes);
     },
 
-    async getImagens(request, response) {
+    async createPublicacao(request, response) {
         const { id } = request.params;
+        console.log(id)
+
+
+        const posts = await connection('publicacoes')
+            .where({ 'id': id })
+            .select('*')
+            .first();
 
         const imagem = await connection('imagens')
             .where({ 'user_id': id })
             .select('*')
-            .limit(1)
+            .first()
+
+        // const publi = await connection('posts')
+        //     .insert({
+        //         'atividade': posts.atividade,
+        //         'descricao': posts.descricao,
+        //         'area': posts.area,
+        //         'data': posts.data,
+        //         'projeto': posts.projeto,
+        //         'local': posts.local,
+        //         'url': imagem.url,
+        //         'nome': imagem.nome,
+        //         'key': imagem.key,
+        //         'user_id': imagem.user_id
+        //     })
+        //     .returning('id'); 
 
         return response.json(imagem)
+
+        // return response.json(posts)
+    },
+
+    async getPublicacao(reques, response) {
+        const posts = await connection('posts')
+            .select('*')
+            .orderBy('posts.id', 'desc')
+
+        return response.json(posts);
     },
 
     async createPost(request, response) {
@@ -113,35 +145,51 @@ module.exports = {
                 "projeto": projeto,
                 "local": local
             })
-        
+
+        await connection('posts')
+            .where({ 'user_id': id })
+            .update({
+                "atividade": atividade,
+                "descricao": descricao,
+                "area": area,
+                "data": data,
+                "projeto": projeto,
+                "local": local
+            })
+
+
         return response.status(200).send();
     },
 
-    async deletePost(request, response){
+    async deletePost(request, response) {
         const { id } = request.params;
 
         const imagens = await connection('imagens')
-        .where({'user_id': id})  
-        .select('*')
+            .where({ 'user_id': id })
+            .select('*')
 
         await connection('imagens')
-        .where({'user_id': id})
-        .delete();
+            .where({ 'user_id': id })
+            .delete();
 
         await connection('publicacoes')
-        .where({'id' : id})
-        .delete();
+            .where({ 'id': id })
+            .delete();
+
+        await connection('posts')
+            .where({ 'user_id': id })
+            .delete();
 
         for (let i = 0; i < imagens.length; i++) {
 
             s3.deleteObject({
                 Bucket: 'maranata-pev',
                 Key: imagens[i].key
-            }).promise(); 
-            
+            }).promise();
+
             // promisify(fs.unlink)(path.resolve(__dirname, '..', '..', 'temp', 'uploads', imagens[i].key))
         }
-        
+
 
         return response.status(204).send();
     }

@@ -18,7 +18,8 @@ routes.post('/post', postController.createPost)
 routes.put('/edit/post/:id', postController.editPost)
 routes.delete('/delete/post/:id', postController.deletePost)
 
-routes.get('/image/:id', postController.getImagens);
+routes.post('/publicacao/:id', postController.createPublicacao);
+routes.get('/publicacoes', postController.getPublicacao);
 routes.post('/post/:id', multer(multerConfig).single("file"), postController.createImage)
 
 routes.get('/messages', messageController.index)
