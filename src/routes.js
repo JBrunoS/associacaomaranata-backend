@@ -18,6 +18,9 @@ routes.post('/post', postController.createPost)
 routes.put('/edit/post/:id', postController.editPost)
 routes.delete('/delete/post/:id', postController.deletePost)
 
+routes.get('/imagens/547', postController.getImagensProjeto547)
+routes.get('/imagens/637', postController.getImagensProjeto637)
+
 routes.post('/publicacao/:id', postController.createPublicacao);
 routes.get('/publicacoes', postController.getPublicacao);
 routes.post('/post/:id', multer(multerConfig).single("file"), postController.createImage)

@@ -54,24 +54,24 @@ module.exports = {
             .select('*')
             .first()
 
-        // const publi = await connection('posts')
-        //     .insert({
-        //         'atividade': posts.atividade,
-        //         'descricao': posts.descricao,
-        //         'area': posts.area,
-        //         'data': posts.data,
-        //         'projeto': posts.projeto,
-        //         'local': posts.local,
-        //         'url': imagem.url,
-        //         'nome': imagem.nome,
-        //         'key': imagem.key,
-        //         'user_id': imagem.user_id
-        //     })
-        //     .returning('id'); 
+        const publi = await connection('posts')
+            .insert({
+                'atividade': posts.atividade,
+                'descricao': posts.descricao,
+                'area': posts.area,
+                'data': posts.data,
+                'projeto': posts.projeto,
+                'local': posts.local,
+                'url': imagem.url,
+                'nome': imagem.nome,
+                'key': imagem.key,
+                'user_id': imagem.user_id
+            })
+            .returning('id'); 
 
-        return response.json(imagem)
+        // return response.json(imagem)
 
-        // return response.json(posts)
+        return response.json(publi)
     },
 
     async getPublicacao(reques, response) {
@@ -192,5 +192,28 @@ module.exports = {
 
 
         return response.status(204).send();
-    }
+    },
+
+    async getImagensProjeto547(request, response){
+
+        const imagens = await connection('imagens')
+            .innerJoin('publicacoes', 'imagens.user_id', 'publicacoes.id')
+            .where({ 'publicacoes.projeto': '547' })
+            .select('imagens.*')
+            .orderBy('imagens.created_at', 'desc')
+            .limit(15)
+
+        return response.json(imagens)
+    },
+    
+    async getImagensProjeto637(request, response){
+        const imagens = await connection('imagens')
+        .innerJoin('publicacoes', 'imagens.user_id', 'publicacoes.id')
+        .where({ 'publicacoes.projeto': '637' })
+        .select('imagens.*')
+        .orderBy('imagens.created_at', 'desc')
+        .limit(15)
+
+    return response.json(imagens)
+    },
 }
