@@ -31,9 +31,9 @@ module.exports = {
 
     async getPosts(request, response) {
 
-        const publicacoes = await connection('publicacoes')
+        const publicacoes = await connection('posts')
             .select('*')
-            .orderBy('publicacoes.id', 'desc')
+            .orderBy('posts.user_id', 'desc')
             .limit(3)
 
         return response.json(publicacoes);
@@ -41,7 +41,7 @@ module.exports = {
 
     async createPublicacao(request, response) {
         const { id } = request.params;
-        console.log(id)
+        
 
 
         const posts = await connection('publicacoes')
@@ -54,7 +54,7 @@ module.exports = {
             .select('*')
             .first()
 
-        const publi = await connection('posts')
+        await connection('posts')
             .insert({
                 'atividade': posts.atividade,
                 'descricao': posts.descricao,
@@ -62,16 +62,15 @@ module.exports = {
                 'data': posts.data,
                 'projeto': posts.projeto,
                 'local': posts.local,
-                'url': imagem.url,
+                'url': imagem.url, 
                 'nome': imagem.nome,
                 'key': imagem.key,
                 'user_id': imagem.user_id
             })
-            .returning('id'); 
 
         // return response.json(imagem)
 
-        return response.json(publi)
+        return response.status(200).send()
     },
 
     async getPublicacao(reques, response) {
