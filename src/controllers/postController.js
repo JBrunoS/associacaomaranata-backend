@@ -33,7 +33,7 @@ module.exports = {
 
         const publicacoes = await connection('posts')
             .select('*')
-            .orderBy('posts.user_id', 'desc')
+            .orderBy('posts.id', 'desc')
             .limit(3)
 
         return response.json(publicacoes);
